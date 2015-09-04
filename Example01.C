@@ -38,29 +38,26 @@ void Example01()
   expTime      = 1. / 100.;
   tr->Fill();
   tr->Write();
-  fout->cd();
   
   TFile *fin2 = new TFile("data/minbias_01.root");
-  TDirectory *cdPU = fout->mkdir("PileupPDFs");
-  cdPU->cd();
   TH1D *hpdf[14];
   for(int ih=0; ih<14; ih++){
     char hnameInput[120];
     sprintf(hnameInput,"h%i",101+ih);
-    char hnameOutput[12];
-    sprintf(hnameOutput,"pupdf_%i",ih);
-    char htitleOutput[12];
-    sprintf(htitleOutput,"pdf of energies from minbias interaction at %3.2f < eta < %3.2f", 0.05+0.1*ih, 0.15+0.1*ih);
     hpdf[ih] = (TH1D*)fin2->Get(hnameInput);
-    //    hpdf[ih]->SetDirectory(cdPU);
+    char hnameOutput[120]; 
+    sprintf(hnameOutput,"pupdf_%i",ih);
+    char htitleOutput[120];
+    sprintf(htitleOutput,"pdf of energies from minbias interaction at %3.2f < eta < %3.2f", 0.05+0.1*ih, 0.15+0.1*ih);
     hpdf[ih]->SetName(hnameOutput);
     hpdf[ih]->SetTitle(htitleOutput);
   }
+
+  fout->cd();
+  TDirectory *cdPU = fout->mkdir("PileupPDFs");
+  cdPU->cd();
   for(int ih=0; ih<14; ih++){
-    cdPU->cd();
     hpdf[ih]->Write();
   }
-  fout->cd();
   fout->Close();
-
 }
